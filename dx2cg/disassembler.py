@@ -100,6 +100,7 @@ def process_header(prog):
     binds = []
     i = 0
     lighting = False
+    textures = 0
     while i < len(prog):
         line = prog[i]
         if line.startswith("Keywords"):
@@ -150,11 +151,22 @@ def process_header(prog):
                 raise ValueError(f"Unrecognized glstate: {val}")
                 
             if dec[0] == "Local":
-                loctab[key] = val
+                loctab[f"c{key}"] = val
             elif dec[0] == "Matrix":
                 for offset in range(0,4):
-                    loctab[key + offset] = f"{val}[{offset}]"
+                    loctab[f"c{key + offset}"] = f"{val}[{offset}]"
             
+            del prog[i]
+            i = i - 1
+        elif line.startswith("SetTexture"):
+            dec = line.split(' ')
+            if dec[2] !=  "{2D}":
+                raise ValueError(f"Unknown texture type {dec[2]}")
+            key = f"s{textures}"
+            val = dec[1][1:-1]
+            loctab[key] = val
+            textures = textures + 1
+
             del prog[i]
             i = i - 1
         i = i + 1
@@ -167,6 +179,8 @@ def process_header(prog):
     
     if lighting:
         header.append("Lighting On")
+
+    # print(loctab)
     
     return (keywords, header, loctab, locdecl)
 
@@ -193,8 +207,9 @@ def resolve_args(args, loctab, consts):
             pass
         elif arg[0] == 'c':
             if arg not in consts:
-                key = int(arg[1:])
-                arg = loctab[key]
+                arg = loctab[arg]
+        elif arg[0] == 's':
+            arg = loctab[arg]
         elif arg[0] == 'o':
             arg = f"o.{arg[1:].lower()}"
         elif re.match("[+-]?([0-9]*[.])?[0-9]+", arg):
