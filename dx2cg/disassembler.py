@@ -53,7 +53,7 @@ ops = {
     "slt": "{0} = float4(({1}.x < {2}.x) ? 1.0f : 0.0f, ({1}.y < {2}.y) ? 1.0f : 0.0f, ({1}.z < {2}.z) ? 1.0f : 0.0f, ({1}.w < {2}.w) ? 1.0f : 0.0f);",
     "sge": "{0} = float4(({1}.x >= {2}.x) ? 1.0f : 0.0f, ({1}.y >= {2}.y) ? 1.0f : 0.0f, ({1}.z >= {2}.z) ? 1.0f : 0.0f, ({1}.w >= {2}.w) ? 1.0f : 0.0f);",
     "rcp": "{0} = ({1} == 0.0f) ? FLT_MAX : (({1} == 1.0f) ? {1} : (1 / {1}));",
-    "texld": "{0} = tex2D({2}, {1});",
+    "texld": "{0} = tex2D({2}, (float2){1});",
 }
 
 struct_a2v = """struct a2v {
@@ -102,14 +102,14 @@ vertex_func = """v2f vert(a2v vdat) {{
 }}
 """
 
-fragment_func = """float4 frag(v2f pdat) {{
+fragment_func = """f2a frag(v2f pdat) {{
 \tfloat4 r0, r1, r2, r3, r4;
 \tfloat4 tmp;
 \tf2a o;
 
 {0}
 
-\treturn o.c0;
+\treturn o;
 }}
 """
 
@@ -153,6 +153,11 @@ def process_header(prog):
             lightval = re.match("glstate_light(\d)_([a-zA-Z]+)", val)
             if lightval:
                 val = f"glstate.light[{lightval[1]}].{lightval[2]}"
+                lighting = True
+            elif val == "_ObjectSpaceCameraPos" and not legacy:
+                val = "mul(_World2Object, float4(_WorldSpaceCameraPos.x, _WorldSpaceCameraPos.y, _WorldSpaceCameraPos.z, 0))"
+            elif val == "_ObjectSpaceLightPos0" and not legacy:
+                val = "mul(_World2Object, _WorldSpaceLightPos0)"
                 lighting = True
             elif val == "glstate_lightmodel_ambient":
                 val = "glstate.lightmodel.ambient"
