@@ -80,7 +80,7 @@ struct_v2f = f"""struct v2f {{
 """
 
 struct_f2a = """struct f2a {
-\tfloat4 c0;
+\tfloat4 c0 : COLOR0;
 };
 """
 
