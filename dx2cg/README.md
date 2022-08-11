@@ -7,4 +7,5 @@ Tools for converting d3d9 shader assembly to HLSL/Cg.
 ## Known issues
 - Only vertex shaders with profile `vs_1_1` are supported
 - No fragment shaders are supported yet
+- Only one subprogram in a subshader will be converted (for now)
 - Only a limited set of instructions (those used by FF and Unity 2.6) are supported
