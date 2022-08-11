@@ -29,11 +29,13 @@ reserved = {
 }
 
 decls = {
-    "dcl_position": "float4 {0} = vardat.vertex;",
-    "dcl_normal": "float4 {0} = float4(vardat.normal.x, vardat.normal.y, vardat.normal.z, 0);",
-    "dcl_texcoord0": "float4 {0} = vardat.texcoord;",
-    "dcl_texcoord1": "float4 {0} = vardat.texcoord1;",
-    "dcl_color": "float4 {0} = vardat.color;",
+    "dcl_position": "float4 {0} = vdat.vertex;",
+    "dcl_normal": "float4 {0} = float4(vdat.normal.x, vdat.normal.y, vdat.normal.z, 0);",
+    "dcl_texcoord0": "float4 {0} = vdat.texcoord;",
+    "dcl_texcoord1": "float4 {0} = vdat.texcoord1;",
+    "dcl_color": "float4 {0} = vdat.color;",
+    "dcl_2d": "; // no operation",
+    "dcl": "float4 {0[0]}{0[1]} = pdat.{0[0]}{0[1]};",
     "def": "const float4 {0} = float4({1}, {2}, {3}, {4});",
 }
 
@@ -51,9 +53,10 @@ ops = {
     "slt": "{0} = float4(({1}.x < {2}.x) ? 1.0f : 0.0f, ({1}.y < {2}.y) ? 1.0f : 0.0f, ({1}.z < {2}.z) ? 1.0f : 0.0f, ({1}.w < {2}.w) ? 1.0f : 0.0f);",
     "sge": "{0} = float4(({1}.x >= {2}.x) ? 1.0f : 0.0f, ({1}.y >= {2}.y) ? 1.0f : 0.0f, ({1}.z >= {2}.z) ? 1.0f : 0.0f, ({1}.w >= {2}.w) ? 1.0f : 0.0f);",
     "rcp": "{0} = ({1} == 0.0f) ? FLT_MAX : (({1} == 1.0f) ? {1} : (1 / {1}));",
+    "texld": "{0} = tex2D({2}, {1});",
 }
 
-struct_appdata = """struct appdata {
+struct_a2v = """struct a2v {
 \tfloat4 vertex : POSITION;
 \tfloat3 normal : NORMAL;
 \tfloat4 texcoord : TEXCOORD0;
@@ -76,6 +79,11 @@ struct_v2f = f"""struct v2f {{
 }};
 """
 
+struct_f2a = """struct f2a {
+\tfloat4 c0;
+};
+"""
+
 cg_header = """CGPROGRAM
 #include "UnityCG.cginc"
 #pragma exclude_renderers xbox360 ps3 gles
@@ -83,14 +91,27 @@ cg_header = """CGPROGRAM
 
 cg_footer = """ENDCG"""
 
-vertex_header = """v2f vert(appdata vardat) {
+vertex_func = """v2f vert(a2v vdat) {{
 \tfloat4 r0, r1, r2, r3, r4;
 \tfloat4 tmp;
 \tv2f o;
+
+{0}
+
+\treturn o;
+}}
 """
 
-vertex_footer = """\treturn o;
-}"""
+fragment_func = """float4 frag(v2f pdat) {{
+\tfloat4 r0, r1, r2, r3, r4;
+\tfloat4 tmp;
+\tf2a o;
+
+{0}
+
+\treturn o.c0;
+}}
+"""
 
 def process_header(prog):
     keywords = []
@@ -165,6 +186,7 @@ def process_header(prog):
             key = f"s{textures}"
             val = dec[1][1:-1]
             loctab[key] = val
+            locdecl.append(f"sampler2D {val};")
             textures = textures + 1
 
             del prog[i]
@@ -205,6 +227,8 @@ def resolve_args(args, loctab, consts):
             pass
         elif arg[0] == 'v':
             pass
+        elif arg[0] == 't':
+            pass
         elif arg[0] == 'c':
             if arg not in consts:
                 arg = loctab[arg]
@@ -239,12 +263,14 @@ def decode(code, args):
             lines.append(f"{target}.{c} = tmp.{c};")
         return lines
     else:
-        raise ValueError(f"Unknown code {code}")
+        raise ValueError(f"Unknown opcode {code}")
 
 def process_asm(asm, loctab):
     shadertype = ""
     if asm[0] == "\"vs_1_1":
         shadertype = "vertex"
+    elif asm[0] == "\"ps_2_0":
+        shadertype = "fragment"
     else:
         raise ValueError(f"Unsupported shader type: {asm[0][1:]}")
     
@@ -266,6 +292,10 @@ def process_asm(asm, loctab):
 
         if code == "def":
             consts.add(args[0])
+
+        pp = code.find("_pp")
+        if pp > -1:
+            code = code[:pp]
             
         resolve_args(args, loctab, consts)
         disasm = decode(code, args)
@@ -281,20 +311,23 @@ def disassemble(text):
     (keywords, header, loctab, locdecl) = process_header(asm)
     (shadertype, disasm) = process_asm(asm, loctab)
     
-    text = "\n".join(header) + "\n"
+    text = "\n".join(header) + "\n" if len(header) > 0 else ""
     text += cg_header
     if keywords:
         text += "#pragma multi_compile " + " ".join(keywords)
     if shadertype == "vertex":
-        text += "#pragma vertex vert\n\n"
-        text += struct_appdata + "\n"
-        text += struct_v2f + "\n"
+        text += "#pragma vertex vert\n"
+    if shadertype == "fragment":
+        text += "#pragma fragment frag\n"
+    text += "\n"
+    text += struct_a2v + "\n"
+    text += struct_v2f + "\n"
+    text += struct_f2a + "\n"
     text += "\n".join(locdecl) + "\n"
     if shadertype == "vertex":
-        text += vertex_header + "\n"
-    text += "\t" + "\n\t".join(disasm) + "\n\n"
-    if shadertype == "vertex":
-        text += vertex_footer + "\n"
+        text += vertex_func.format("\t" + "\n\t".join(disasm))
+    if shadertype == "fragment":
+        text += fragment_func.format("\t" + "\n\t".join(disasm))
     text += cg_footer
     return text
 
