@@ -115,7 +115,6 @@ fragment_func = """float4 frag(v2f pdat) {{
 
 def process_header(prog):
     keywords = []
-    header = []
     loctab = {}
     locdecl = []
     binds = []
@@ -192,19 +191,10 @@ def process_header(prog):
             del prog[i]
             i = i - 1
         i = i + 1
-        
-    if len(binds) > 0:
-        header.append("BindChannels {")
-        for b in binds:
-            header.append(f"\t{b}")
-        header.append("}")
-    
-    if lighting:
-        header.append("Lighting On")
 
     # print(loctab)
     
-    return (keywords, header, loctab, locdecl)
+    return (keywords, loctab, locdecl, binds, lighting)
 
 def resolve_args(args, loctab, consts):
     for a in range(0, len(args)):
@@ -306,28 +296,52 @@ def process_asm(asm, loctab):
     
     return (shadertype, translated)
 
-def disassemble(text):
-    asm = text.split('\n')[1:-1]
-    (keywords, header, loctab, locdecl) = process_header(asm)
-    (shadertype, disasm) = process_asm(asm, loctab)
+def disassemble(blocks):
+    shaders = {}
+    keywords = set()
+    locdecl = set()
+    binds = set()
+    lighting = False
+    for block in blocks:
+        asm = block.split('\n')[1:-1]
+
+        (kw, ltab, ldecl, bds, light) = process_header(asm)
+        keywords.update(kw)
+        locdecl.update(ldecl)
+        binds.update(bds)
+        lighting |= light
+
+        (shadertype, disasm) = process_asm(asm, ltab)
+        shaders[shadertype] = disasm
+
+    text = ""
+    if len(binds) > 0:
+        text += "BindChannels {\n"
+        for b in binds:
+            text += f"\t{b}\n"
+        text += "}\n"
     
-    text = "\n".join(header) + "\n" if len(header) > 0 else ""
+    if lighting:
+        text += "Lighting On\n"
+
     text += cg_header
-    if keywords:
+    if len(keywords) > 0:
         text += "#pragma multi_compile " + " ".join(keywords)
-    if shadertype == "vertex":
+    if "vertex" in shaders:
         text += "#pragma vertex vert\n"
-    if shadertype == "fragment":
+    if "fragment" in shaders:
         text += "#pragma fragment frag\n"
     text += "\n"
-    text += struct_a2v + "\n"
+    if "vertex" in shaders:
+        text += struct_a2v + "\n"
     text += struct_v2f + "\n"
-    text += struct_f2a + "\n"
+    if "fragment" in shaders:
+        text += struct_f2a + "\n"
     text += "\n".join(locdecl) + "\n"
-    if shadertype == "vertex":
-        text += vertex_func.format("\t" + "\n\t".join(disasm))
-    if shadertype == "fragment":
-        text += fragment_func.format("\t" + "\n\t".join(disasm))
+    if "vertex" in shaders:
+        text += "\n" + vertex_func.format("\t" + "\n\t".join(shaders["vertex"]))
+    if "fragment" in shaders:
+        text += "\n" + fragment_func.format("\t" + "\n\t".join(shaders["fragment"]))
     text += cg_footer
     return text
 
@@ -337,5 +351,5 @@ if __name__ == "__main__":
     else:
         with open(sys.argv[1], "r") as fi:
             buf = fi.read()
-        disasm = disassemble(buf)
+        disasm = disassemble(buf.split('~'))
         print(disasm)
