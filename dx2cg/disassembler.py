@@ -30,7 +30,7 @@ reserved = {
 
 decls = {
     "dcl_position": "float4 {0} = vdat.vertex;",
-    "dcl_normal": "float4 {0} = float4(vdat.normal.x, vdat.normal.y, vdat.normal.z, 0);",
+    "dcl_normal": "float4 {0} = float4(vdat.normal, 0);",
     "dcl_texcoord0": "float4 {0} = vdat.texcoord;",
     "dcl_texcoord1": "float4 {0} = vdat.texcoord1;",
     "dcl_color": "float4 {0} = vdat.color;",
@@ -155,7 +155,7 @@ def process_header(prog):
                 val = f"glstate.light[{lightval[1]}].{lightval[2]}"
                 lighting = True
             elif val == "_ObjectSpaceCameraPos" and not legacy:
-                val = "mul(_World2Object, float4(_WorldSpaceCameraPos.x, _WorldSpaceCameraPos.y, _WorldSpaceCameraPos.z, 0))"
+                val = "mul(_World2Object, float4(_WorldSpaceCameraPos, 1.0f))"
             elif val == "_ObjectSpaceLightPos0" and not legacy:
                 val = "mul(_World2Object, _WorldSpaceLightPos0)"
                 lighting = True
