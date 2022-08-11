@@ -4,6 +4,7 @@
 # ycc 08/08/2022
 
 import re
+import sys
 from disassembler import disassemble
 
 tabs = 3
@@ -14,7 +15,7 @@ def indent(block):
     return "\n".join(lines)
 
 def find_closing_bracket(block, i):
-    count = 0;
+    count = 0
     while i < len(block):
         if block[i] == '{':
             count = count + 1
@@ -62,3 +63,9 @@ def process(fn_in, fn_out):
             fo.write(processed)
         return True
     return False
+
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print("Usage: swapper.py <file-in> <file-out>")
+    else:
+        process(*sys.argv[1:3])

@@ -29,9 +29,9 @@ def process_batch(path, suffix="_hlsl"):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: <shader-path> [outfile-suffix]")
+        print("Usage: main.py <folder> [outfile-suffix]")
     elif len(sys.argv) == 2:
         process_batch(sys.argv[1])
     else:
-        process_batch(*sys.argv[1:2])
+        process_batch(*sys.argv[1:3])
 

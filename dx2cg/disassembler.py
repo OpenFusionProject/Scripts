@@ -4,6 +4,7 @@
 # ycc 08/08/2022
 
 import re
+import sys
 
 legacy = False # True for 2.6
 
@@ -281,3 +282,12 @@ def disassemble(text):
         text += vertex_footer + "\n"
     text += cg_footer
     return text
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: disassembler.py <filename>")
+    else:
+        with open(sys.argv[1], "r") as fi:
+            buf = fi.read()
+        disasm = disassemble(buf)
+        print(disasm)
