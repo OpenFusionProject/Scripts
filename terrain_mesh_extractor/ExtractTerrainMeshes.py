@@ -69,6 +69,10 @@ def rip_terrain_mesh(f, outpath):
                 v.co.x = v.co.y
                 v.co.y = tmp
 
+            # flip normals
+            for f in bm.faces:
+                f.normal_flip()
+
             # export
             bpy.ops.object.mode_set(mode="OBJECT")
             bpy.ops.object.select_all(action='SELECT')
