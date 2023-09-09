@@ -101,15 +101,22 @@ def rip_terrain_mesh(f, outpath, clear=False):
             outfile = f"{name}.obj"
             bpy.ops.export_scene.obj(filepath=os.path.join(outpath, outfile))
 
-            # select modified vertices
-            #bpy.ops.object.mode_set(mode="EDIT")
-            #bm = bmesh.from_edit_mesh(context.edit_object.data)
-            #bm.verts.ensure_lookup_table()
-            #for v in bm.verts:
-            #    v.select = False
+            bpy.ops.object.mode_set(mode="EDIT")
+            bm = bmesh.from_edit_mesh(context.edit_object.data)
+            bm.verts.ensure_lookup_table()
+
+            # deselect all
+            for v in bm.verts:
+                v.select = False
+                for l in v.link_loops:
+                    l.face.select = False
+
+            # select modified vertices + faces
             #for shift_index in indices:
             #    v = bm.verts[shift_index]
             #    v.select = True
+            #    for l in v.link_loops:
+            #        l.face.select = True
             
             if(clear):
                 bpy.ops.object.mode_set(mode="OBJECT")
