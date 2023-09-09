@@ -8,7 +8,14 @@ dongpath = r'C:\Users\gents\AppData\LocalLow\Unity\Web Player\Cache\Fusionfall'
 env = UnityEnvironment(base_path=dongpath)
 outpath = r'C:\Users\gents\3D Objects\FFTerrainMeshes'
 
-def rip_terrain_mesh(f, outpath):
+def uvs_from_vert(uv_layer, v):
+    uvs = []
+    for l in v.link_loops:
+        uv_data = l[uv_layer]
+        uvs.append(uv_data.uv)
+    return uvs
+
+def rip_terrain_mesh(f, outpath, clear=False):
     dong = Asset.from_file(f, environment=env)
 
     for k, v in dong.objects.items():
@@ -24,12 +31,6 @@ def rip_terrain_mesh(f, outpath):
             bpy.ops.mesh.primitive_grid_add(x_subdivisions=terrain_width, y_subdivisions=terrain_height, size=128, enter_editmode=True, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
             context = bpy.context
             grid = context.edit_object
-
-            # apply triangulate modifier
-            mod = grid.modifiers.new("Triangulate", 'TRIANGULATE')
-            mod.quad_method = 'FIXED' # triangle orientation
-            bpy.ops.object.mode_set(mode='OBJECT')
-            bpy.ops.object.modifier_apply(modifier="Triangulate")
 
             bpy.ops.object.mode_set(mode='EDIT')
             bm = bmesh.from_edit_mesh(context.edit_object.data)
@@ -48,6 +49,8 @@ def rip_terrain_mesh(f, outpath):
 
             indices = []
             shift_amt = abs(bm.verts[0].co.x - bm.verts[1].co.x)
+            uv_layer = bm.loops.layers.uv.active
+            uv_shift_amt = 1 / 256
             # gather m_Shifts positions
             for shift in terrainData['m_Heightmap']['m_Shifts']:
                 shift_index = shift['y'] + shift['x'] * 129
@@ -56,12 +59,26 @@ def rip_terrain_mesh(f, outpath):
                 flags = shift['flags'] # bits: +X -X +Y -Y
                 if flags & 0b1000: # +X
                     v.co.x += shift_amt
+                    for uv in uvs_from_vert(uv_layer, v):
+                        uv.x += uv_shift_amt
                 if flags & 0b0100: # -X
                     v.co.x -= shift_amt
+                    for uv in uvs_from_vert(uv_layer, v):
+                        uv.x -= uv_shift_amt
                 if flags & 0b0010: # +Y
                     v.co.y += shift_amt
+                    for uv in uvs_from_vert(uv_layer, v):
+                        uv.y += uv_shift_amt
                 if flags & 0b0001: # -Y
                     v.co.y -= shift_amt
+                    for uv in uvs_from_vert(uv_layer, v):
+                        uv.y -= uv_shift_amt
+
+            # apply triangulate modifier
+            mod = grid.modifiers.new("Triangulate", 'TRIANGULATE')
+            mod.quad_method = 'FIXED' # triangle orientation
+            bpy.ops.object.mode_set(mode='OBJECT')
+            bpy.ops.object.modifier_apply(modifier="Triangulate")
 
             # flip diagonally
             for v in bm.verts:
@@ -90,10 +107,10 @@ def rip_terrain_mesh(f, outpath):
             #    v = bm.verts[shift_index]
             #    v.select = True
             
-            # clear the scene
-            bpy.ops.object.mode_set(mode="OBJECT")
-            bpy.ops.object.select_all(action='SELECT')
-            bpy.ops.object.delete()
+            if(clear):
+                bpy.ops.object.mode_set(mode="OBJECT")
+                bpy.ops.object.select_all(action='SELECT')
+                bpy.ops.object.delete()
 
 dongs = os.listdir(dongpath)
 for dongname in dongs:
