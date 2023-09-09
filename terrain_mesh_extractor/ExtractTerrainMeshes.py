@@ -94,29 +94,40 @@ def rip_terrain_mesh(f, outpath, clear=False):
             for f in bm.faces:
                 f.normal_flip()
 
-            # export
+            # select vertex chunks and separate
+            verts = {}
+            for x in range(128):
+                for y in range(128):
+                    idx = y + x * 129
+                    v = bm.verts[idx]
+                    verts[idx] = v
+                    v.select = False
+                    for f in v.link_faces:
+                        f.select = False
+            chunk_size = 8
+            for x in range(128 // chunk_size):
+                for y in range(128 // chunk_size):
+                    for i in range(x * chunk_size, x * chunk_size + chunk_size):
+                        for j in range(y * chunk_size, y * chunk_size + chunk_size):
+                            idx = j + i * 129
+                            v = verts[idx]
+                            for f in v.link_faces:
+                                f.select = True
+                    bpy.ops.mesh.duplicate()
+                    bpy.ops.mesh.separate(type='SELECTED')
+                    bpy.ops.mesh.select_all(action='DESELECT')
+
+            # delete main
             bpy.ops.object.mode_set(mode="OBJECT")
+            bpy.ops.object.select_all(action='DESELECT')
+            grid.select_set(True)
+            bpy.ops.object.delete()
+
+            # export
             bpy.ops.object.select_all(action='SELECT')
             name = terrainData['m_Name']
             outfile = f"{name}.obj"
             bpy.ops.export_scene.obj(filepath=os.path.join(outpath, outfile))
-
-            bpy.ops.object.mode_set(mode="EDIT")
-            bm = bmesh.from_edit_mesh(context.edit_object.data)
-            bm.verts.ensure_lookup_table()
-
-            # deselect all
-            for v in bm.verts:
-                v.select = False
-                for l in v.link_loops:
-                    l.face.select = False
-
-            # select modified vertices + faces
-            #for shift_index in indices:
-            #    v = bm.verts[shift_index]
-            #    v.select = True
-            #    for l in v.link_loops:
-            #        l.face.select = True
             
             if(clear):
                 bpy.ops.object.mode_set(mode="OBJECT")
