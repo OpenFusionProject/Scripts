@@ -80,6 +80,10 @@ def rip_terrain_mesh(f, outpath, clear=False):
             bpy.ops.object.mode_set(mode='OBJECT')
             bpy.ops.object.modifier_apply(modifier="Triangulate")
 
+            bpy.ops.object.mode_set(mode="EDIT")
+            bm = bmesh.from_edit_mesh(context.edit_object.data)
+            bm.verts.ensure_lookup_table()
+
             # flip diagonally
             for v in bm.verts:
                 tmp = v.co.x
