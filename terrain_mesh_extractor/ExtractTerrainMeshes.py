@@ -96,8 +96,8 @@ def rip_terrain_mesh(f, outpath, clear=False):
 
             # select vertex chunks and separate
             verts = {}
-            for x in range(128):
-                for y in range(128):
+            for x in range(129):
+                for y in range(129):
                     idx = y + x * 129
                     v = bm.verts[idx]
                     verts[idx] = v
@@ -107,12 +107,14 @@ def rip_terrain_mesh(f, outpath, clear=False):
             chunk_size = 8
             for x in range(128 // chunk_size):
                 for y in range(128 // chunk_size):
-                    for i in range(x * chunk_size, x * chunk_size + chunk_size):
-                        for j in range(y * chunk_size, y * chunk_size + chunk_size):
+                    for i in range(x * chunk_size, x * chunk_size + chunk_size + 1):
+                        for j in range(y * chunk_size, y * chunk_size + chunk_size + 1):
                             idx = j + i * 129
                             v = verts[idx]
-                            for f in v.link_faces:
-                                f.select = True
+                            v.select = True
+                    bm.select_mode = {'VERT', 'EDGE', 'FACE'}
+                    bm.select_flush_mode()
+                    bpy.context.tool_settings.mesh_select_mode = (False, False, True)
                     bpy.ops.mesh.duplicate()
                     bpy.ops.mesh.separate(type='SELECTED')
                     bpy.ops.mesh.select_all(action='DESELECT')
