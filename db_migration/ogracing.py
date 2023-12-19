@@ -27,6 +27,7 @@ import sqlite3
 
 LOGFILE = 'ogracing.log'
 DRY_RUN = False # set to True if testing the script
+CAP_SCORES = True # set to False to disable capping scores to the IZ maximum
 
 class EpData:
     max_score = 0
@@ -88,7 +89,7 @@ def process_result(cur, result, epinfo):
     pod_score = (epdata.pod_factor * result.ring_count) / epdata.max_pods
     time_score = (epdata.time_factor * result.time) / epdata.max_time
     newscore = int(exp(pod_score - time_score + epdata.scale_factor))
-    if newscore > epdata.max_score:
+    if CAP_SCORES and newscore > epdata.max_score:
         logging.warning('score {} greater than max ({}) for epid {}, capping'.format(newscore, epdata.max_score, result.epid))
         print('warning: score {} greater than max ({}) for epid {}, capping'.format(newscore, epdata.max_score, result.epid))
         newscore = epdata.max_score
