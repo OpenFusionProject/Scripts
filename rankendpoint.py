@@ -73,8 +73,15 @@ def get_score_entries(data, name):
     #        data.append(((999, 'hehe', 'dong', 1)))
 
     scores="<{}>\n".format(name)
-    for rank, item in enumerate(data, start=1):
-        scores+='\t<score>PCUID="{}" Score="{}" Rank="{}" FirstName="{}" LastName="{}"</score>\n'.format(item[0], item[3], rank, item[1], item[2])
+    rank = 1
+    last_score = -1
+    for item in data:
+        score = item[3]
+        if score == last_score:
+            rank -= 1
+        scores+='\t<score>PCUID="{}" Score="{}" Rank="{}" FirstName="{}" LastName="{}"</score>\n'.format(item[0], score, rank, item[1], item[2])
+        rank += 1
+        last_score = score
     scores+="</{}>\n".format(name)
 
     return scores
