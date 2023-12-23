@@ -15,6 +15,7 @@ def main(db_path):
     except Exception as ex:
         print(ex)
         sys.exit()
+    app.run()
 
 #db.set_trace_callback(print)
  
