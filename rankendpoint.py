@@ -3,18 +3,24 @@ app = Flask(__name__)
 
 import sqlite3
 import sys
+import os
 
 header = "SUCCESS"
 
-def main(db_path):
-    # Opens database in read-only mode
-    # Checking same thread disabled for now, which is fine since we never modify anything
-    try:
-        db = sqlite3.connect('file:{}?mode=ro'.format(db_path), uri=True, check_same_thread=False)
-        cur = db.cursor()
-    except Exception as ex:
-        print(ex)
-        sys.exit()
+db_path = os.environ.get('RANKENDPOINT_DBPATH')
+route = os.environ.get('RANKENDPOINT_ROUTE')
+
+if None in (db_path, route):
+    sys.exit('must set RANKENDPOINT_DBPATH and RANKENDPOINT_ROUTE environment variables')
+
+# Opens database in read-only mode
+# Checking same thread disabled for now, which is fine since we never modify anything
+try:
+    db = sqlite3.connect('file:{}?mode=ro'.format(db_path), uri=True, check_same_thread=False)
+    cur = db.cursor()
+except Exception as ex:
+    print(ex)
+    sys.exit()
 
 #db.set_trace_callback(print)
  
@@ -85,7 +91,7 @@ def get_score_entries(data, name):
 
     return scores
 
-@app.route('/getranks', methods=['POST'])
+@app.route(f'{route}', methods=['POST'])
 def rankings():
     #print("PCUID:", request.form['PCUID'])
     #print("EP_ID:", request.form['EP_ID'])
@@ -127,10 +133,4 @@ def rankings():
 
     # and send it off!
     return header + xmlbody
-
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: {} <db file>".format(sys.argv[0]))
-    else:
-        main(sys.argv[1])
 
