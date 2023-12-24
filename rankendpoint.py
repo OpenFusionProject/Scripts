@@ -32,22 +32,32 @@ except Exception as ex:
     sys.exit()
 
 #db.set_trace_callback(print)
- 
+
 def fetch_ranks(epid, date, num):
     sql = """
-        SELECT * FROM (
-            SELECT RaceResults.PlayerID,
-                   Players.FirstName, 
-                   Players.LastName, 
-                   RaceResults.Score
+        SELECT
+            PBRaceResults.PlayerID,
+            Players.FirstName,
+            Players.LastName,
+            PBRaceResults.Score
+        FROM (
+            SELECT
+                ROW_NUMBER() OVER (
+                    PARTITION BY RaceResults.PlayerID
+                    ORDER BY
+                        RaceResults.Score DESC,
+                        RaceResults.RingCount DESC,
+                        RaceResults.Time ASC
+                ) AS PersonalOrder,
+                RaceResults.*
             FROM RaceResults
-            INNER JOIN Players ON RaceResults.PlayerID=Players.PlayerID
-            WHERE EPID=? AND 
-            DATETIME(Timestamp,'unixepoch') > (SELECT DATETIME('now', ?))
-            ORDER BY Score DESC
-        )
-        GROUP BY PlayerID
-        ORDER BY Score DESC
+            WHERE EPID=? AND DATETIME(Timestamp, 'unixepoch') > DATETIME('now', ?)
+        ) AS PBRaceResults
+        INNER JOIN Players ON PBRaceResults.PlayerID=Players.PlayerID AND PBRaceResults.PersonalOrder=1
+        ORDER BY
+            PBRaceResults.Score DESC,
+            PBRaceResults.RingCount DESC,
+            PBRaceResults.Time ASC
         """
 
     if num > -1:
@@ -63,15 +73,14 @@ def fetch_ranks(epid, date, num):
 
 def fetch_my_ranks(pcuid, epid, date):
     sql = """
-        SELECT RaceResults.PlayerID,
-               Players.FirstName, 
-               Players.LastName, 
-               RaceResults.Score
+        SELECT
+            RaceResults.PlayerID,
+            Players.FirstName,
+            Players.LastName,
+            MAX(RaceResults.Score) AS MaxScore
         FROM RaceResults
         INNER JOIN Players ON RaceResults.PlayerID=Players.PlayerID
-        WHERE RaceResults.PlayerID=? AND EPID=? AND 
-        DATETIME(Timestamp,'unixepoch') > (SELECT DATETIME('now', ?))
-        ORDER BY Score DESC LIMIT 1;
+        WHERE RaceResults.PlayerID=? AND EPID=? AND DATETIME(Timestamp, 'unixepoch') > DATETIME('now', ?);
         """
 
     args = (pcuid, epid, date)
@@ -105,7 +114,7 @@ def get_score_entries(data, name):
 def rankings():
     #print("PCUID:", request.form['PCUID'])
     #print("EP_ID:", request.form['EP_ID'])
-    
+
     # Input Validation
     try:
         pcuid = int(request.form['PCUID'])
