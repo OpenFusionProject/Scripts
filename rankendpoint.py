@@ -1,3 +1,12 @@
+# This script serves an HTTP endpoint that provides the racing scores.
+#
+# Example invocation for testing:
+# $ RANKENDPOINT_DBPATH=/path/to/database.db RANKENDPOINT_ROUTE=/getranks flask --app rankendpoint.py run
+#
+# Example invocation in production (behind a properly configured gateway like nginx):
+# $ RANKENDPOINT_DBPATH=/path/to/database.db RANKENDPOINT_ROUTE=/getranks uwsgi \
+#     -s localhost:3031 --manage-script-name --mount /=rankendpoint:app --plugin python3
+
 from flask import Flask, request
 app = Flask(__name__)
 
@@ -91,6 +100,7 @@ def get_score_entries(data, name):
 
     return scores
 
+# route should be something like /getranks
 @app.route(f'{route}', methods=['POST'])
 def rankings():
     #print("PCUID:", request.form['PCUID'])
