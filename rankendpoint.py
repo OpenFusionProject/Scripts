@@ -77,10 +77,12 @@ def fetch_my_ranks(pcuid, epid, date):
             RaceResults.PlayerID,
             Players.FirstName,
             Players.LastName,
-            MAX(RaceResults.Score) AS MaxScore
+            RaceResults.Score
         FROM RaceResults
         INNER JOIN Players ON RaceResults.PlayerID=Players.PlayerID
-        WHERE RaceResults.PlayerID=? AND EPID=? AND DATETIME(Timestamp, 'unixepoch') > DATETIME('now', ?);
+        WHERE RaceResults.PlayerID=? AND EPID=? AND DATETIME(Timestamp, 'unixepoch') > DATETIME('now', ?)
+        ORDER BY RaceResults.Score DESC
+        LIMIT 1;
         """
 
     args = (pcuid, epid, date)
