@@ -128,8 +128,8 @@ def rip_terrain_mesh(f, outpath, clear=False):
             # export
             bpy.ops.object.select_all(action='SELECT')
             name = terrainData['m_Name']
-            outfile = f"{name}.obj"
-            bpy.ops.export_scene.obj(filepath=os.path.join(outpath, outfile))
+            outfile = f"{name}.fbx"
+            bpy.ops.export_scene.fbx(filepath=os.path.join(outpath, outfile))
             
             if(clear):
                 bpy.ops.object.mode_set(mode="OBJECT")
