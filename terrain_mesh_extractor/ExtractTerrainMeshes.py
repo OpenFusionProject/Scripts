@@ -4,9 +4,9 @@ import bpy
 import bmesh
 import os
 
-dongpath = r'C:\Users\gents\AppData\LocalLow\Unity\Web Player\Cache\Fusionfall'
+dongpath = (os.path.expandvars('%userprofile%') + "/AppData/LocalLow/Unity/Web Player/Cache/FusionFall")
 env = UnityEnvironment(base_path=dongpath)
-outpath = r'C:\Users\gents\3D Objects\FFTerrainMeshes'
+outpath = (os.path.expandvars('%userprofile%') + "/3D Objects/FFTerrainMeshes")
 
 def uvs_from_vert(uv_layer, v):
     uvs = []
@@ -14,6 +14,12 @@ def uvs_from_vert(uv_layer, v):
         uv_data = l[uv_layer]
         uvs.append(uv_data.uv)
     return uvs
+
+def delete_all_objects():
+    for i in bpy.context.scene.objects:
+        i.select_set(True)
+
+    bpy.ops.object.delete() 
 
 def rip_terrain_mesh(f, outpath, clear=False):
     dong = Asset.from_file(f, environment=env)
@@ -132,9 +138,7 @@ def rip_terrain_mesh(f, outpath, clear=False):
             bpy.ops.export_scene.fbx(filepath=os.path.join(outpath, outfile))
             
             if(clear):
-                bpy.ops.object.mode_set(mode="OBJECT")
-                bpy.ops.object.select_all(action='SELECT')
-                bpy.ops.object.delete()
+                delete_all_objects()
 
 dongs = os.listdir(dongpath)
 for dongname in dongs:
@@ -147,4 +151,4 @@ for dongname in dongs:
         with open(os.path.join(dongpath, dongname, assetname), "rb") as f:
             outdir = os.path.join(outpath, dongname, assetname)
             os.makedirs(outdir, exist_ok=True)
-            rip_terrain_mesh(f, outdir)
+            rip_terrain_mesh(f, outdir, True)
