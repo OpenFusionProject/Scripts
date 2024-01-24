@@ -109,8 +109,11 @@ def table_populate(cursor, table_name, table_entries):
 # %%
 def process_xdt_table(cursor, root, table_name, mappings):
     table = root[table_name]
-    for (i, subtable_name) in tqdm(enumerate(table), desc=table_name, total=len(table)):
-        db_table_name = mappings[table_name][i]
+    for subtable_name in tqdm(table, desc=table_name, total=len(table)):
+        if subtable_name not in mappings[table_name]:
+            print(f"No mapping found for {table_name}.{subtable_name}")
+            raise Exception()
+        db_table_name = mappings[table_name][subtable_name]
         #print(f"{subtable_name} => {db_table_name}")
         
         table_entries = table[subtable_name]

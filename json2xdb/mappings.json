@@ -1,43 +1,232 @@
 {
-    "m_pNpcTable": [ "NpcTable", "NpcString", "NpcIcon", "BarkerTable", "NpcMesh", "NpcGroup", "ServiceString" ],
-    "m_pBackItemTable": [ "ItemBackTable", "ItemBackString", "ItemBackIcon", "ItemBackSound", "ItemBackMesh" ],
-    "m_pFaceItemTable": [ "ItemFaceTable", "ItemFaceString", "ItemFaceIcon", "ItemFaceSound", "ItemFaceMesh" ],
-    "m_pGlassItemTable": [ "ItemGlassTable", "ItemGlassString", "ItemGlassIcon", "ItemGlassSound", "ItemGlassMesh" ],
-    "m_pHatItemTable": [ "ItemHatTable", "ItemHatString", "ItemHatIcon", "ItemHatSound", "ItemHatMesh" ],
-    "m_pHeadItemTable": [ "ItemHeadTable", "ItemHeadString", "ItemHeadIcon", "ItemHeadSound", "ItemHeadMesh" ],
-    "m_pPantsItemTable": [ "ItemPantsTable", "ItemPantsString", "ItemPantsIcon", "ItemPantsSound", "ItemPantsMesh" ],
-    "m_pShirtsItemTable": [ "ItemShirtTable", "ItemShirtString", "ItemShirtIcon", "ItemShirtSound", "ItemShirtMesh" ],
-    "m_pShoesItemTable": [ "ItemShoesTable", "ItemShoesString", "ItemShoesIcon", "ItemShoesSound", "ItemShoesMesh" ],
-    "m_pWeaponItemTable": [ "ItemWpnTable", "ItemWpnString", "ItemWpnIcon", "ItemWpnSound", "ItemWpnMesh" ],
-    "m_pVehicleItemTable": [ "ItemVehicleTable", "ItemVehicleString", "ItemVehicleIcon", "ItemVehicleSound", "ItemVehicleMesh" ],
-    "m_pNameTable": [ "FirstNameTable", "MiddleNameTable", "LastNameTable" ],
-    "m_pChatTable": [ "1stChatTable", "2ndChatTable", "3rdChatTable", "ChatTable", "ChatString", "ClassTable", "EmoteLink" ],
-    "m_pAvatarTable": [ "AvatarTable", "AvatarGrowTable" ],
-    "m_pEmoteTable": [ "EmoteTable", "EmoteTexture" ],
-    "m_pGeneralItemTable": [ "ItemGeneralTable", "ItemGeneralString", "ItemGeneralIcon" ],
-    "m_pChestItemTable": [ "ItemChestTable", "ItemChestString", "ChestIconTable" ],
-    "m_pQuestItemTable": [ "ItemQuestTable", "ItemQuestString", "ItemQuestIcon" ],
-    "m_pAnimationTable": [ "M", "Mob", "Nano" ],
-    "m_pGuideTable": [ "GuideTable", "GuideStringTable" ],
-    "m_pInstanceTable": [ "InstanceTable", "WarpTable", "NameString" ],
-    "m_pMessageTable": [ "SystemMessage" ],
-    "m_pMissionTable": [ "MissionField", "MissionStringTable", "Journal_ID", "Reward" ],
-    "m_pNanoTable": [ "NanoTable", "NanoString", "NanoMesh", "NanoIcon", "NanoTuneTable", "NanoTuneString", "NanoTuneIcon" ],
-    "m_pShinyTable": [ "ShinyTable", "ShinyMesh", "ShinyString" ],
-    "m_pSkillTable": [ "SkillTable", "SkillIcon", "SkillBuffEffect", "SkillString" ],
-    "m_pConditionTable": [ "StatusTable" ],
-    "m_pTransportationTable": [ "TransportationTable", "TransportationMesh", "WarpLocationTable", "TransportationWarpString", "WyvernLocationTable", "TransportationWyvernString", "TransIcon" ],
-    "m_pVendorTable": [ "VendorTable" ],
-    "m_pXComTable": [ "XComTable" ],
-    "m_pCreationItemTable": [ "ItemCreationTable" ],
-    "m_pFirstUseTable": [ "FirstUseTable", "FirstUseString" ],
-    "m_pRulesTable": [ "RulesTable", "RulesString" ],
-    "m_pHelpTable": [ "HelpTable", "HelpString", "DescriptionTable", "Description", "DescriptionString" ],
-    "m_pCutSceneTable": [ "CutSceneText" ],
-    "m_pCombiningTable": [ "CombiningTable" ],
-    "m_pFilterTable": [ "UnfilterTable", "FilterTable", "NamefilterTable" ],
-    "m_pClassTable": [ "ClassType", "ClassString", "ClassWpnType", "ClassIcon" ],
-    "m_pEnchantTable": [ "EnchantTable" ],
-    "m_pClassSkillTable": [ "ClassSkill_Charging", "ClassSkill_Manager", "ClassSkill_Skill", "ClassSkill_String", "ClassSkill_BuffEffect", "ClassSkill_Icon", "ClassSkill_Sound", "Condition_Character" ],
-    "m_pSkillBookTable": [ "ItemSkillBookTable", "ItemSkillBookString", "ItemSkillBookIcon" ]
+    "m_pAnimationTable": {
+        "m_pAvatarData": "M",
+        "m_pNpcData": "Mob",
+        "m_pNanoData": "Nano"
+    },
+    "m_pAvatarTable": {
+        "m_pAvatarData": "AvatarTable",
+        "m_pAvatarGrowData": "AvatarGrowTable"
+    },
+    "m_pChatTable": {
+        "m_pFirstChatData": "1stChatTable",
+        "m_pSecondChatData": "2ndChatTable",
+        "m_pThirdChatData": "3rdChatTable",
+        "m_pChatStringData": "ChatString",
+        "m_pMenuChatData": "ChatTable",
+        "m_pMenuChatClassData": "ClassTable",
+        "m_pMenuChatEmoteData": "EmoteLink"
+    },
+    "m_pEmoteTable": {
+        "m_pEmoteAnimationData": "EmoteTable",
+        "m_pEmoteTextureData": "EmoteTexture"
+    },
+    "m_pGuideTable": {
+        "m_pGuideData": "GuideTable",
+        "m_pGuideStringData": "GuideStringTable"
+    },
+    "m_pInstanceTable": {
+        "m_pInstanceData": "InstanceTable",
+        "m_pWarpData": "WarpTable",
+        "m_pWarpNameData": "NameString"
+    },
+    "m_pMessageTable": {
+        "m_pMessageData": "SystemMessage"
+    },
+    "m_pMissionTable": {
+        "m_pJournalData": "Journal_ID",
+        "m_pMissionData": "MissionField",
+        "m_pMissionStringData": "MissionStringTable",
+        "m_pRewardData": "Reward"
+    },
+    "m_pNameTable": {
+        "m_pFirstName": "FirstNameTable",
+        "m_pMiddleName": "MiddleNameTable",
+        "m_pLastName": "LastNameTable"
+    },
+    "m_pNanoTable": {
+        "m_pNanoData": "NanoTable",
+        "m_pNanoStringData": "NanoString",
+        "m_pNanoMeshData": "NanoMesh",
+        "m_pNanoIconData": "NanoIcon",
+        "m_pNanoTuneData": "NanoTuneTable",
+        "m_pNanoTuneStringData": "NanoTuneString",
+        "m_pNanoTuneIconData": "NanoTuneIcon"
+    },
+    "m_pNpcTable": {
+        "m_pNpcData": "NpcTable",
+        "m_pNpcStringData": "NpcString",
+        "m_pNpcBarkerData": "BarkerTable",
+        "m_pNpcMeshData": "NpcMesh",
+        "m_pNpcIconData": "NpcIcon",
+        "m_pNpcGroupData": "NpcGroup",
+        "m_pNpcServiceData": "ServiceString"
+    },
+    "m_pShinyTable": {
+        "m_pShinyData": "ShinyTable",
+        "m_pShinyStringData": "ShinyString",
+        "m_pShinyMeshData": "ShinyMesh"
+    },
+    "m_pSkillTable": {
+        "m_pSkillData": "SkillTable",
+        "m_pSkillBuffData": "SkillBuffEffect",
+        "m_pSkillIconData": "SkillIcon",
+        "m_pSkillStringData": "SkillString"
+    },
+    "m_pConditionTable": {
+        "m_pConditionData": "StatusTable"
+    },
+    "m_pTransportationTable": {
+        "m_pTransportationMeshData": "TransportationMesh",
+        "m_pTransportationData": "TransportationTable",
+        "m_pTransportationWarpLocation": "WarpLocationTable",
+        "m_pTransportationWarpString": "TransportationWarpString",
+        "m_pBroomstickLocation": "WyvernLocationTable",
+        "m_pBroomstickString": "TransportationWyvernString",
+        "m_pTransIcon": "TransIcon"
+    },
+    "m_pVendorTable": {
+        "m_pItemData": "VendorTable"
+    },
+    "m_pXComTable": {
+        "m_pXComData": "XComTable"
+    },
+    "m_pBackItemTable": {
+        "m_pItemData": "ItemBackTable",
+        "m_pItemStringData": "ItemBackString",
+        "m_pItemIconData": "ItemBackIcon",
+        "m_pItemMeshData": "ItemBackMesh",
+        "m_pItemSoundData": "ItemBackSound"
+    },
+    "m_pFaceItemTable": {
+        "m_pItemData": "ItemFaceTable",
+        "m_pItemStringData": "ItemFaceString",
+        "m_pItemIconData": "ItemFaceIcon",
+        "m_pItemMeshData": "ItemFaceMesh",
+        "m_pItemSoundData": "ItemFaceSound"
+    },
+    "m_pGlassItemTable": {
+        "m_pItemData": "ItemGlassTable",
+        "m_pItemStringData": "ItemGlassString",
+        "m_pItemIconData": "ItemGlassIcon",
+        "m_pItemMeshData": "ItemGlassMesh",
+        "m_pItemSoundData": "ItemGlassSound"
+    },
+    "m_pHatItemTable": {
+        "m_pItemData": "ItemHatTable",
+        "m_pItemStringData": "ItemHatString",
+        "m_pItemIconData": "ItemHatIcon",
+        "m_pItemMeshData": "ItemHatMesh",
+        "m_pItemSoundData": "ItemHatSound"
+    },
+    "m_pHeadItemTable": {
+        "m_pItemData": "ItemHeadTable",
+        "m_pItemStringData": "ItemHeadString",
+        "m_pItemIconData": "ItemHeadIcon",
+        "m_pItemMeshData": "ItemHeadMesh",
+        "m_pItemSoundData": "ItemHeadSound"
+    },
+    "m_pPantsItemTable": {
+        "m_pItemData": "ItemPantsTable",
+        "m_pItemStringData": "ItemPantsString",
+        "m_pItemIconData": "ItemPantsIcon",
+        "m_pItemMeshData": "ItemPantsMesh",
+        "m_pItemSoundData": "ItemPantsSound"
+    },
+    "m_pShirtsItemTable": {
+        "m_pItemData": "ItemShirtTable",
+        "m_pItemStringData": "ItemShirtString",
+        "m_pItemIconData": "ItemShirtIcon",
+        "m_pItemMeshData": "ItemShirtMesh",
+        "m_pItemSoundData": "ItemShirtSound"
+    },
+    "m_pShoesItemTable": {
+        "m_pItemData": "ItemShoesTable",
+        "m_pItemStringData": "ItemShoesString",
+        "m_pItemIconData": "ItemShoesIcon",
+        "m_pItemMeshData": "ItemShoesMesh",
+        "m_pItemSoundData": "ItemShoesSound"
+    },
+    "m_pWeaponItemTable": {
+        "m_pItemData": "ItemWpnTable",
+        "m_pItemStringData": "ItemWpnString",
+        "m_pItemIconData": "ItemWpnIcon",
+        "m_pItemMeshData": "ItemWpnMesh",
+        "m_pItemSoundData": "ItemWpnSound"
+    },
+    "m_pVehicleItemTable": {
+        "m_pItemData": "ItemVehicleTable",
+        "m_pItemStringData": "ItemVehicleString",
+        "m_pItemIconData": "ItemVehicleIcon",
+        "m_pItemMeshData": "ItemVehicleMesh",
+        "m_pItemSoundData": "ItemVehicleSound"
+    },
+    "m_pGeneralItemTable": {
+        "m_pItemData": "ItemGeneralTable",
+        "m_pItemStringData": "ItemGeneralString",
+        "m_pItemIconData": "ItemGeneralIcon"
+    },
+    "m_pChestItemTable": {
+        "m_pItemData": "ItemChestTable",
+        "m_pItemStringData": "ItemChestString",
+        "m_pItemIconData": "ChestIconTable"
+    },
+    "m_pQuestItemTable": {
+        "m_pItemData": "ItemQuestTable",
+        "m_pItemStringData": "ItemQuestString",
+        "m_pItemIconData": "ItemQuestIcon"
+    },
+    "m_pCreationItemTable": {
+        "m_pCreationItemData": "ItemCreationTable"
+    },
+    "m_pFirstUseTable": {
+        "m_pFirstUseData": "FirstUseTable",
+        "m_pFirstUseString": "FirstUseString"
+    },
+    "m_pRulesTable": {
+        "m_pRulesData": "RulesTable",
+        "m_pRulesString": "RulesString"
+    },
+    "m_pHelpTable": {
+        "m_pHelpData": "HelpTable",
+        "m_pHelpPageData": "DescriptionTable",
+        "m_pHelpPageDescData": "Description",
+        "m_pHelpPageString": "DescriptionString",
+        "m_pHelpString": "HelpString"
+    },
+    "m_pCutSceneTable": {
+        "m_SceneData": "CutSceneText"
+    },
+    "m_pCombiningTable": {
+        "m_pCombiningData": "CombiningTable"
+    },
+    "m_pFilterTable": {
+        "m_pWhiteFilterData": "UnfilterTable",
+        "m_pBlackFilterData": "FilterTable",
+        "m_pNameFilterData": "NamefilterTable"
+    },
+    "m_pClassTable": {
+        "m_pClassTypeData": "ClassType",
+        "m_pClassWpnTypeData": "ClassWpnType",
+        "m_pClassString": "ClassString",
+        "m_pClassIconData": "ClassIcon"
+    },
+    "m_pEnchantTable": {
+        "m_pEnchantData": "EnchantTable"
+    },
+    "m_pClassSkillTable": {
+        "m_pClassSkillChargingElement": "ClassSkill_Charging",
+        "m_pSkillManagerData": "ClassSkill_Manager",
+        "m_pSkillData": "ClassSkill_Skill",
+        "m_pSkillBuffElement": "ClassSkill_BuffEffect",
+        "m_pSkillString": "ClassSkill_String",
+        "m_pClassSkillCondition": "Condition_Character",
+        "m_pSkillIconData": "ClassSkill_Icon",
+        "m_pSkillSound": "ClassSkill_Sound"
+    },
+    "m_pSkillBookTable": {
+        "m_pSkillBookElement": "ItemSkillBookTable",
+        "m_pSkillBookString": "ItemSkillBookString",
+        "m_pSkillBookIconData": "ItemSkillBookIcon"
+    }
 }
