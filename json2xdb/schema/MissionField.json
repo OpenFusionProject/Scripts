@@ -45,7 +45,7 @@
     "m_iSUReward",
     "m_iSUOutgoingMission",
     "m_iSUOutgoingTask",
-    "m_iSUItem",
+    "m_iSUItem_",
     "m_iSUMessageType",
     "m_iSUMessagetextID",
     "m_iSUMessageSendNPC",

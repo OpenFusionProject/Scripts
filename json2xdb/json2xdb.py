@@ -5,14 +5,14 @@ from tqdm import tqdm
 import mysql.connector
 
 SPLIT_FIELDS = {
-    "m_iMissionRewardItemID": ("m_iMissionRewardItemID", "m_iMissionRewarItemType"),
-    "m_iMissionRewardItemID2": ("m_iMissionRewardItemID2", "m_iMissionRewardItemType2"),
-    "m_iCSTItemID": ("m_iCSTItemID", "m_iCSTItemNumNeeded"),
-    "m_iCSUEnemyID": ("m_iCSUEnemyID", "m_iCSUNumToKill"),
-    "m_iCSUItemID": ("m_iCSUItemID", "m_iCSUItemNumNeeded"),
-    "m_iSTItemID": ("m_iSTItemID", "m_iSTItemNumNeeded", "m_iSTItemDropRate"),
-    "m_iSUItem": ("m_iSUItem", "m_iSUInstancename"),
-    "m_iFItemID": ("m_iFItemID", "m_iFItemNumNeeded"),
+    "m_iMissionRewardItem": ("m_iMissionRewardItemID", "m_iMissionRewarItemType"),
+    "m_iMissionRewardItem2": ("m_iMissionRewardItemID2", "m_iMissionRewardItemType2"),
+    "m_iCSTItem": ("m_iCSTItemID", "m_iCSTItemNumNeeded"),
+    "m_iCSUEnemy": ("m_iCSUEnemyID", "m_iCSUNumToKill"),
+    "m_iCSUItem": ("m_iCSUItemID", "m_iCSUItemNumNeeded"),
+    "m_iSTItem": ("m_iSTItemID", "m_iSTItemNumNeeded", "m_iSTItemDropRate"),
+    "m_iSUItem_": ("m_iSUItem", "m_iSUInstancename"),
+    "m_iFItem": ("m_iFItemID", "m_iFItemNumNeeded"),
 }
 
 # %%
@@ -67,6 +67,32 @@ def handle_dict_table(table_entries, identifier_key, items_key):
             new_table_entries.append(new_item)
     return new_table_entries
 
+def apply_schema(schema, entry):
+    fixed_entry = {}
+    padding = 0
+    for field_name in schema:
+        if field_name is None:
+            fixed_entry[f"m_iPadding{padding}"] = 0
+            padding += 1
+            continue
+
+        if field_name in entry:
+            fixed_entry[field_name] = entry[field_name]
+        elif field_name in SPLIT_FIELDS:
+            split_field_names = SPLIT_FIELDS[field_name]
+            interleaved_arr_len = len(entry[split_field_names[0]])
+            val = []
+            for i in range(interleaved_arr_len):
+                for split_field_name in split_field_names:
+                    val.append(entry[split_field_name][i])
+            for l in range(len(val)):
+                n = l % len(split_field_names)
+                i = l // len(split_field_names)
+                new_field_name = f"{split_field_names[n]}{i}"
+                fixed_entry[new_field_name] = val[l]
+        else:
+            print("Missing field: {}".format(field_name))
+    return fixed_entry
 
 # %%
 def gen_column_sql(field_name, field_value):
@@ -125,11 +151,14 @@ def process_xdt_table(cursor, root, table_name, mappings):
             print(f"No mapping found for {table_name}.{subtable_name}")
             raise Exception()
         db_table_name = mappings[table_name][subtable_name]
+        with open(f"schema/{db_table_name}.json", 'r') as f:
+            schema = json.load(f)
         #print(f"{subtable_name} => {db_table_name}")
         
         table_entries = table[subtable_name]
         if db_table_name == "CutSceneText":
             table_entries = handle_dict_table(table_entries, "m_iEvent", "m_TextElement")
+        table_entries = [apply_schema(schema, entry) for entry in table_entries]
         table_entries = [flatten_table_entry(entry) for entry in table_entries]
 
         # clear the table
