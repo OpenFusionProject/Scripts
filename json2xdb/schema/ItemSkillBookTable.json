@@ -1,0 +1,17 @@
+[
+    "m_iItemNumber",
+    "m_iItemName",
+    "m_iComment",
+    "m_iTradeAble",
+    "m_iItemPrice",
+    "m_iItemSellPrice",
+    "m_iSellAble",
+    "m_iStackNumber",
+    "m_iClassNumber",
+    "m_iMinLevel",
+    "m_iSkillPrev",
+    "m_iSkillLearn",
+    "m_iIcon",
+    "m_iCash",
+    "m_iPrecedeSkill"
+]

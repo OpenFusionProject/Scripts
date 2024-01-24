@@ -1,0 +1,11 @@
+[
+    "m_iXcomNumber",
+    "m_iXpos",
+    "m_iYpos",
+    "m_iZpos",
+    "m_iZone",
+    "m_iFree",
+    "m_iRegenRangeMin",
+    "m_iRegenRangeMax",
+    "m_iWarpNumber"
+]

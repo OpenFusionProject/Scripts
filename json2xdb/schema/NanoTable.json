@@ -1,0 +1,23 @@
+[
+    "m_iNanoNumber",
+    "m_iNanoName",
+    "m_iComment",
+    "m_iNanoBattery1",
+    "m_iNanoBattery2",
+    "m_iNanoBattery3",
+    "m_iNanoDrain",
+    "m_iBatteryRecharge",
+    "m_iStyle",
+    "m_iNanoSet",
+    "m_iPower",
+    "m_iAccuracy",
+    "m_iProtection",
+    "m_iDodge",
+    "m_iNeedQItemID",
+    "m_iNeedFusionMatterCnt",
+    "m_iTune",
+    "m_iMesh",
+    "m_iIcon1",
+    "m_iEffect1",
+    "m_iSound"
+]

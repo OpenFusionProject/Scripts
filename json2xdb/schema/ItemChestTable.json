@@ -1,0 +1,12 @@
+[
+    "m_iItemNumber",
+    "m_iItemName",
+    "m_iChestDesc",
+    "m_iTradeAble",
+    "m_iItemPrice",
+    "m_iItemSellPrice",
+    "m_iSellAble",
+    "m_iStackNumber",
+    "m_iIcon",
+    "m_iChestCheck"
+]

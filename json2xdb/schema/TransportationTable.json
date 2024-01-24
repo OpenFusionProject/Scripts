@@ -1,0 +1,13 @@
+[
+    "m_iVehicleID",
+    "m_iNPCID",
+    "m_iLocalString",
+    "m_iMoveType",
+    "m_iStartLocation",
+    "m_iEndLocation",
+    "m_iCost",
+    "m_iSpeed",
+    "m_iMesh",
+    "m_iSound",
+    "m_iRouteNum"
+]

@@ -1,0 +1,22 @@
+[
+    "m_iPower",
+    "m_iAccuracy",
+    "m_iProtection",
+    "m_iDodge",
+    "m_iRunSpeed",
+    "m_iSwimSpeed",
+    "m_iJumpHeight",
+    "m_iJumpDistance",
+    "m_iViewAngle",
+    "m_iViewDistance",
+    "m_iAtkRange",
+    "m_iAtkAngle",
+    "m_iEffectArea",
+    "m_iTargetMode",
+    "m_iTargetNumber",
+    "m_iInitialTime",
+    "m_iDeliverTime",
+    "m_iDelayTime",
+    "m_iDurationTime",
+    "m_iBonusUp"
+]

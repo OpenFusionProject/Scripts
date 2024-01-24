@@ -1,0 +1,16 @@
+[
+    "m_iEnchantGrade",
+    "m_iCost",
+    "m_iClass",
+    "m_iWpnMatter",
+    "m_iCostumeMatter",
+    "m_iProbability",
+    "m_iOffenceUp",
+    "m_iDefenceUp",
+    "m_iFailType",
+    "m_iNoDropProb",
+    "m_iOneDropProb",
+    "m_iTwoDropProb",
+    "m_iThreeDropProb",
+    "m_iFourDropProb"
+]

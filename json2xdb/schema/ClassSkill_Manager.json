@@ -1,0 +1,10 @@
+[
+    "m_iPriority",
+    "m_iSkillbutton",
+    "m_iSkillNumber",
+    "m_iConditionChar",
+    "m_iConditionSkill",
+    "m_iKeyMintime",
+    "m_iKeyMaxtime",
+    "m_iMotionSkipTime"
+]

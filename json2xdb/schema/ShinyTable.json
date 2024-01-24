@@ -1,0 +1,11 @@
+[
+    "m_iShinyID",
+    "m_iShinyName",
+    "m_iRegenTime",
+    "m_iDropNumber",
+    "m_iSkillNumber",
+    "m_iDurationTime",
+    "m_iMesh",
+    "m_iExinctionEffect",
+    "m_iGetEffect"
+]

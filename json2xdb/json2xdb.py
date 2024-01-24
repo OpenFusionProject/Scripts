@@ -4,6 +4,17 @@ import sys
 from tqdm import tqdm
 import mysql.connector
 
+SPLIT_FIELDS = {
+    "m_iMissionRewardItemID": ("m_iMissionRewardItemID", "m_iMissionRewarItemType"),
+    "m_iMissionRewardItemID2": ("m_iMissionRewardItemID2", "m_iMissionRewardItemType2"),
+    "m_iCSTItemID": ("m_iCSTItemID", "m_iCSTItemNumNeeded"),
+    "m_iCSUEnemyID": ("m_iCSUEnemyID", "m_iCSUNumToKill"),
+    "m_iCSUItemID": ("m_iCSUItemID", "m_iCSUItemNumNeeded"),
+    "m_iSTItemID": ("m_iSTItemID", "m_iSTItemNumNeeded", "m_iSTItemDropRate"),
+    "m_iSUItem": ("m_iSUItem", "m_iSUInstancename"),
+    "m_iFItemID": ("m_iFItemID", "m_iFItemNumNeeded"),
+}
+
 # %%
 def get_db_column_name(xdt_field_name):
     # special case 1

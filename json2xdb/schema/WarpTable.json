@@ -1,0 +1,18 @@
+[
+    "m_iWarpNumber",
+    "m_iWarpGroupType",
+    "m_iNpcNumber",
+    "m_iIsInstance",
+    "m_iToMapNum",
+    "m_iToX",
+    "m_iToY",
+    "m_iToZ",
+    "m_iLimit_Level",
+    "m_iLimit_TaskID",
+    "m_iMissionID",
+    "m_iLimit_ItemType",
+    "m_iLimit_ItemID",
+    "m_iLimit_UseItemType",
+    "m_iLimit_UseItemID",
+    "m_iCost"
+]

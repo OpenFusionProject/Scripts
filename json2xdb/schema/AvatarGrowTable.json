@@ -1,0 +1,17 @@
+[
+    "m_iLevel",
+    "m_iHpUp",
+    "m_iMaxHP",
+    "m_iAccuracy",
+    "m_iDodge",
+    "m_iPower",
+    "m_iProtection",
+    "m_iReqBlob_NanoCreate",
+    "m_iReqBlob_NanoTune",
+    "m_iFMLimit",
+    "m_iMobFM",
+    "m_iNanoQuestTaskID",
+    "m_iNanoID",
+    "m_iBonusFM",
+    "m_iDeathFM"
+]

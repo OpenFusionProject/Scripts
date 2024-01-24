@@ -1,0 +1,10 @@
+[
+    "m_iWpnType",
+    "m_iRateOfFire",
+    "m_iOverheatMax",
+    "m_iOverheatUse",
+    "m_iUnuseCool",
+    "m_iUseCool",
+    "m_iCoolTime",
+    "m_iOverheatEffect"
+]
