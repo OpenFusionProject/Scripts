@@ -141,19 +141,31 @@ def main(conn, xdt_path):
             process_xdt_table(cursor, root, table_name, mappings)
     conn.commit()
 
+def connect_to_db():
+    return mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="mypassword",
+        database="tabledata"
+    )
+
+def prep_db():
+    conn = connect_to_db()
+    cursor = conn.cursor()
+    cursor.execute("SET GLOBAL max_allowed_packet=1073741824")
+    conn.commit()
+    conn.close()
+
 # %%
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python3 json2xdb.py <path to xdt file>")
         sys.exit(1)
     xdt_path = sys.argv[1]
-    conn = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="mypassword",
-        database="tabledata"
-    )
+    prep_db()
+    conn = connect_to_db()
     main(conn, xdt_path)
+    conn.close()
 
 # %%
 
