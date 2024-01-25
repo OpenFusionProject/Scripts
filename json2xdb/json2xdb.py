@@ -186,7 +186,7 @@ def connect_to_db():
         host="localhost",
         user="root",
         password="mypassword",
-        database="tabledata"
+        database="XDB"
     )
 
 def prep_db():
