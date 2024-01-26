@@ -179,6 +179,7 @@ def main(conn, xdt_path):
     for table_name in root:
         if "Table" in table_name:
             process_xdt_table(cursor, root, table_name, mappings)
+    finalize(cursor)
     conn.commit()
 
 def connect_to_db():
@@ -192,9 +193,17 @@ def connect_to_db():
 def prep_db():
     conn = connect_to_db()
     cursor = conn.cursor()
+    # we have to upload a lot of data, so we need to raise the limit
     cursor.execute("SET GLOBAL max_allowed_packet=1073741824")
     conn.commit()
     conn.close()
+
+def finalize(cursor):
+    # credentials used by the game
+    cursor.execute("GRANT SELECT ON XDB.* TO 'cmog' IDENTIFIED BY 'scooby'")
+    # change the root password to something more secure
+    new_root_pw = input("Enter new root password: ")
+    cursor.execute(f"SET PASSWORD = PASSWORD('{new_root_pw}')")
 
 # %%
 if __name__ == "__main__":
