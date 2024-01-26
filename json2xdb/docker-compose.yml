@@ -4,6 +4,7 @@ version: '3.1'
 services:
   db:
     image: mysql:5.5.42
+    command: --character-set-server utf8
     restart: always
     ports:
       - 3306:3306
