@@ -186,7 +186,6 @@ def process_header(prog):
             i = i - 1
         elif line.startswith("SetTexture"):
             dec = line.split(' ')
-            texture_type = None
             if dec[2] == "{2D}":
                 texture_type = "sampler2D"
             elif dec[2] == "{3D}":
@@ -227,6 +226,7 @@ def resolve_args(args, loctab, consts):
             arg = arg[:dot]
         else:
             swiz = ""
+
         if arg[0] == 'r':
             pass
         elif arg[0] == 'v':
@@ -247,6 +247,22 @@ def resolve_args(args, loctab, consts):
         
         args[a] = neg + arg + swiz
 
+def get_cgtex_type(name, locdecl):
+    for loc in locdecl:
+        loc = loc.split(' ')
+        if name == loc[1][:-1]:
+            if loc[0] == 'sampler2D':
+                return "tex2D"
+            elif loc[0] == 'sampler3D':
+                return "tex3D"
+            elif loc[0] == 'samplerCUBE':
+                return "texCUBE"
+            elif loc[0] == 'samplerRECT':
+                return "texRECT"
+            else:
+                raise ValueError(f"Unknown CG texture type {loc[0]}")
+    raise ValueError(f"Could not find texture {name} in locals")    
+
 def decode(code, args, locdecl):
     if code in decls:
         return [decls[code].format(*args)]
@@ -262,21 +278,8 @@ def decode(code, args, locdecl):
         else:
             swiz = "xyzw"
         
-        lines = []
         if code == "texld":
-            cg_tex_type = None
-            for loc in locdecl:
-                loc = loc.split(' ')
-                if args[2] == loc[1][:-1]:
-                    if loc[0] == 'sampler2D':
-                        cg_tex_type = "tex2D"
-                    elif loc[0] == 'sampler3D':
-                        cg_tex_type = "tex3D"
-                    elif loc[0] == 'samplerCUBE':
-                        cg_tex_type = "texCUBE"
-                    elif loc[0] == 'samplerRECT':
-                        cg_tex_type = "texRECT"
-            lines = [ops[code].format("tmp", *args[1:], cg_tex_type)]
+            lines = [ops[code].format("tmp", *args[1:], get_cgtex_type(args[2], locdecl))]
         else:
             lines = [ops[code].format("tmp", *args[1:])]
 
