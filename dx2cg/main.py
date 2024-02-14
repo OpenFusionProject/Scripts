@@ -3,7 +3,7 @@
 
 import os
 import sys
-from swapper import process
+from .swapper import process
 
 def process_file(filename, suffix):
     dot = filename.rfind(".")

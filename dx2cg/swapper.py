@@ -5,7 +5,7 @@
 
 import re
 import sys
-from disassembler import disassemble
+from .disassembler import disassemble
 
 tabs = 3
 def indent(block):

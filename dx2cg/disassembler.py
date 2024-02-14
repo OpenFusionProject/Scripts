@@ -41,6 +41,7 @@ decls = {
 
 ops = {
     "mov": "{0} = {1};",
+    "mov_sat": "{0} = clamp({1}, 0.0, 1.0)",
     "add": "{0} = {1} + {2};",
     "mul": "{0} = {1} * {2};",
     "mad": "{0} = {1} * {2} + {3};",
@@ -53,7 +54,7 @@ ops = {
     "slt": "{0} = float4(({1}.x < {2}.x) ? 1.0f : 0.0f, ({1}.y < {2}.y) ? 1.0f : 0.0f, ({1}.z < {2}.z) ? 1.0f : 0.0f, ({1}.w < {2}.w) ? 1.0f : 0.0f);",
     "sge": "{0} = float4(({1}.x >= {2}.x) ? 1.0f : 0.0f, ({1}.y >= {2}.y) ? 1.0f : 0.0f, ({1}.z >= {2}.z) ? 1.0f : 0.0f, ({1}.w >= {2}.w) ? 1.0f : 0.0f);",
     "rcp": "{0} = ({1} == 0.0f) ? FLT_MAX : (({1} == 1.0f) ? {1} : (1 / {1}));",
-    "texld": "{0} = tex2D({2}, (float2){1});",
+    "texld": "{0} = {3}({2}, (float2){1});",
 }
 
 struct_a2v = """struct a2v {
@@ -185,12 +186,20 @@ def process_header(prog):
             i = i - 1
         elif line.startswith("SetTexture"):
             dec = line.split(' ')
-            if dec[2] !=  "{2D}":
+            if dec[2] == "{2D}":
+                texture_type = "sampler2D"
+            elif dec[2] == "{3D}":
+                texture_type = "sampler3D"
+            elif dec[2] == "{RECT}":
+                texture_type = "samplerRECT"
+            elif dec[2] == "{CUBE}":
+                texture_type = "samplerCUBE"
+            else:
                 raise ValueError(f"Unknown texture type {dec[2]}")
             key = f"s{textures}"
             val = dec[1][1:-1]
             loctab[key] = val
-            locdecl.append(f"sampler2D {val};")
+            locdecl.append(f"{texture_type} {val};")
             textures = textures + 1
 
             del prog[i]
@@ -217,7 +226,7 @@ def resolve_args(args, loctab, consts):
             arg = arg[:dot]
         else:
             swiz = ""
-        
+
         if arg[0] == 'r':
             pass
         elif arg[0] == 'v':
@@ -238,7 +247,23 @@ def resolve_args(args, loctab, consts):
         
         args[a] = neg + arg + swiz
 
-def decode(code, args):
+def get_cgtex_type(name, locdecl):
+    for loc in locdecl:
+        loc = loc.split(' ')
+        if name == loc[1][:-1]:
+            if loc[0] == 'sampler2D':
+                return "tex2D"
+            elif loc[0] == 'sampler3D':
+                return "tex3D"
+            elif loc[0] == 'samplerCUBE':
+                return "texCUBE"
+            elif loc[0] == 'samplerRECT':
+                return "texRECT"
+            else:
+                raise ValueError(f"Unknown CG texture type {loc[0]}")
+    raise ValueError(f"Could not find texture {name} in locals")    
+
+def decode(code, args, locdecl):
     if code in decls:
         return [decls[code].format(*args)]
     elif code in ops:
@@ -253,14 +278,18 @@ def decode(code, args):
         else:
             swiz = "xyzw"
         
-        lines = [ops[code].format("tmp", *args[1:])]
+        if code == "texld":
+            lines = [ops[code].format("tmp", *args[1:], get_cgtex_type(args[2], locdecl))]
+        else:
+            lines = [ops[code].format("tmp", *args[1:])]
+
         for c in swiz:
             lines.append(f"{target}.{c} = tmp.{c};")
         return lines
     else:
         raise ValueError(f"Unknown opcode {code}")
 
-def process_asm(asm, loctab):
+def process_asm(asm, loctab, locdecl):
     shadertype = ""
     if asm[0] == "\"vs_1_1":
         shadertype = "vertex"
@@ -293,7 +322,7 @@ def process_asm(asm, loctab):
             code = code[:pp]
             
         resolve_args(args, loctab, consts)
-        disasm = decode(code, args)
+        disasm = decode(code, args, locdecl)
         # print(f"{instruction} \t==>\t{disasm}")
         disasm.insert(0, f"// {instruction}")
         translated.extend(disasm)
@@ -316,7 +345,7 @@ def disassemble(blocks):
         binds.update(bds)
         lighting |= light
 
-        (shadertype, disasm) = process_asm(asm, ltab)
+        (shadertype, disasm) = process_asm(asm, ltab, locdecl)
         shaders[shadertype] = disasm
 
     text = ""
